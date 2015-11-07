@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="D:\Biportal-master\demo\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\libs\internal_impl-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\internal_impl-23.0.1-1637c75936dffc66ac5649e169d947d4bc0a0587.jar" />
+    </item>
+    <item
+        jar="C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\com.jakewharton\butterknife\6.1.0\63735f48b82bcd24cdd33821342428252eb1ca5a\butterknife-6.1.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="63735f48b82bcd24cdd33821342428252eb1ca5a">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\butterknife-6.1.0-69d2d3c27627661806f0bd051a18a12cc184adc9.jar" />
+    </item>
+    <item
+        jar="D:\Biportal-master\demo\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\classes-7f989c83429bfb4b36f94625ae0ced8d9355b106.jar" />
+    </item>
+    <item
+        jar="D:\Biportal-master\demo\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\classes-b1e8469fd423b3eb494736a2ef26be1e4ad98470.jar" />
+    </item>
+    <item
+        jar="C:\Users\Administrator\.gradle\caches\modules-2\files-2.1\com.mcxiaoke.volley\library\1.0.19\a8f23f65fc1e522ee4a1a697ee569901a46741fa\library-1.0.19.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="a8f23f65fc1e522ee4a1a697ee569901a46741fa">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\library-1.0.19-78f0bb23743784ba5177d1b9659f6fa6d6a7bd06.jar" />
+    </item>
+    <item
+        jar="C:\Users\Administrator\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\support-annotations-23.0.1-3cde6ad6eac86bde5ce93849a5eb34ad77ad9ce4.jar" />
+    </item>
+    <item
+        jar="D:\Biportal-master\demo\build\intermediates\exploded-aar\Biportal-master\library\unspecified\jars\libs\nineoldandroids-2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="59f19e43354d32de831379c23ce03bb259a4c2b7">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\nineoldandroids-2.4.0-5e68e32856e1bbc8903f0ef44798782325ed7fd4.jar" />
+    </item>
+    <item
+        jar="D:\Biportal-master\demo\build\intermediates\exploded-aar\com.android.support\design\23.0.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e5c61a3169221a89654ffcaaed47bba51cf071ad">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\classes-e5e65e10315f3f60702d02c857f71c5bfbf4361d.jar" />
+    </item>
+    <item
+        jar="D:\Biportal-master\demo\build\intermediates\exploded-aar\Biportal-master\library\unspecified\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="dab55b91fb832d08408318750ffe796c5dfce6ea">
+        <dex dex="D:\Biportal-master\demo\build\intermediates\pre-dexed\debug\classes-6975e932a76779ff0eac14031d955595dd756539.jar" />
+    </item>
+
+</items>

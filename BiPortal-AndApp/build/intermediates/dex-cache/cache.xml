@@ -2,67 +2,53 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\SUNgHOOn\.gradle\caches\modules-2\files-2.1\com.mcxiaoke.volley\library\1.0.19\a8f23f65fc1e522ee4a1a697ee569901a46741fa\library-1.0.19.jar"
+        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="a8f23f65fc1e522ee4a1a697ee569901a46741fa">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\library-1.0.19-e8eef5d78ff4da3aba857940ee472477bb8ff02c.jar" />
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\pre-dexed\androidTest\debug\classes-7c5e347e74cf4517d9bacdd61c6bb06416a7edb5.jar" />
     </item>
     <item
-        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\exploded-aar\BiPortal-AndApp\library\unspecified\jars\classes.jar"
+        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\libs\internal_impl-23.0.1.jar"
         jumboMode="false"
         revision="23.0.1"
-        sha1="3cf3da151b966ea8fddc79abbf99c6c613c3c800">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\classes-404d0c2368fedbacd042741872bfc3cdcf1023ea.jar" />
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\pre-dexed\androidTest\debug\internal_impl-23.0.1-3fcd282083e65eeeaa34b0f272ed882279484311.jar" />
+    </item>
+    <item
+        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\bundles\debug\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="f9df67f53b34f2ff21c62c5bc796484a46b13322">
+        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\pre-dexed\androidTest\debug\classes-182b613dace121984baf1357e3afd3ccc7798cc9.jar" />
     </item>
     <item
         jar="D:\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
         jumboMode="false"
         revision="23.0.1"
         sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\support-annotations-23.0.1-9792d51791d92eddc0d9758885c1364396bdbf7e.jar" />
+        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\pre-dexed\androidTest\debug\support-annotations-23.0.1-9792d51791d92eddc0d9758885c1364396bdbf7e.jar" />
     </item>
     <item
-        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\exploded-aar\BiPortal-AndApp\library\unspecified\jars\libs\nineoldandroids-2.4.0.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="59f19e43354d32de831379c23ce03bb259a4c2b7">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\nineoldandroids-2.4.0-c6aec0eb40ffa00769734efd05f18639842928ce.jar" />
-    </item>
-    <item
-        jar="C:\Users\SUNgHOOn\.gradle\caches\modules-2\files-2.1\com.jakewharton\butterknife\6.1.0\63735f48b82bcd24cdd33821342428252eb1ca5a\butterknife-6.1.0.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="63735f48b82bcd24cdd33821342428252eb1ca5a">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\butterknife-6.1.0-e65a70a381a0bcaf3e6ccea183ef3bdb7999ae71.jar" />
-    </item>
-    <item
-        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\libs\internal_impl-23.0.1.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\internal_impl-23.0.1-b14b87d0f8f2ee7ca1735409de54e0a20e4c9602.jar" />
-    </item>
-    <item
-        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\classes-88402a9033f67e5338a4de110f3b42ebee10999f.jar" />
-    </item>
-    <item
-        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\exploded-aar\com.android.support\design\23.0.1\jars\classes.jar"
-        jumboMode="false"
-        revision="23.0.1"
-        sha1="e5c61a3169221a89654ffcaaed47bba51cf071ad">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\classes-ff07c56e42cae7886b64b17afbb4891b0a4b5061.jar" />
-    </item>
-    <item
-        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\jars\classes.jar"
+        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\jars\classes.jar"
         jumboMode="false"
         revision="23.0.1"
         sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
-        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\demo\build\intermediates\pre-dexed\debug\classes-1c48ada1b0d0f3bf2147bb315b1339b390715ba1.jar" />
+        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\pre-dexed\androidTest\debug\classes-6f3c06b10e3958030e6c8e0a1adcf80a830bf5ac.jar" />
+    </item>
+    <item
+        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\exploded-aar\com.android.support\design\23.0.1\jars\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="e5c61a3169221a89654ffcaaed47bba51cf071ad">
+        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\pre-dexed\androidTest\debug\classes-c43256000e10e4a6a94aeb722e10463b18bf9b79.jar" />
+    </item>
+    <item
+        jar="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\bundles\debug\libs\nineoldandroids-2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="59f19e43354d32de831379c23ce03bb259a4c2b7">
+        <dex dex="D:\Android\AndroidStudioProjects\BiPortal\BiPortal-AndApp\library\build\intermediates\pre-dexed\androidTest\debug\nineoldandroids-2.4.0-d813c4db494ea640fd93e71e0c86d10808421c74.jar" />
     </item>
 
 </items>

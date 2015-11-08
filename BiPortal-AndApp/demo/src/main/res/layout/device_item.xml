@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/deviceName"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/rssi"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/deviceName"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/distance"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/deviceName"
+        android:layout_toRightOf="@+id/rssi"/>
+
+    <TextView
+        android:id="@+id/txt"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/deviceName"
+        android:layout_toRightOf="@+id/distance"/>
+
+    <TextView
+        android:id="@+id/tx"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/rssi"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/deviceID"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/rssi"
+        android:layout_toRightOf="@+id/tx"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/use"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/distance"
+        android:layout_toRightOf="@+id/deviceID"
+        android:layout_marginLeft="20dp"/>
+
+</RelativeLayout>

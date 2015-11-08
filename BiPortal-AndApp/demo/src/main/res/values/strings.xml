@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   ~ Copyright 2015 Rudson Lima
+
+   ~ Licensed under the Apache License, Version 2.0 (the "License");
+   ~ you may not use this file except in compliance with the License.
+   ~ You may obtain a copy of the License at
+
+   ~ http://www.apache.org/licenses/LICENSE-2.0
+
+   ~ Unless required by applicable law or agreed to in writing, software
+   ~ distributed under the License is distributed on an "AS IS" BASIS,
+   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   ~ See the License for the specific language governing permissions and
+   ~ limitations under the License.
+-->
+<resources>
+
+    <string name="app_name">Biportal</string>
+
+    <string name="sign_in">Sign in</string>
+
+    <string name="inbox">Inbox</string>
+    <string name="starred">Starred</string>
+    <string name="sent_mail">Sent Mail</string>
+    <string name="drafts">Drafts</string>
+    <string name="categories">Categories</string>
+    <string name="trash">Trash</string>
+    <string name="spam">Spam</string>
+    <string name="settings">Settings</string>
+
+    <string name="add">Add</string>
+    <string name="search">Search</string>
+
+    <string name="important">Important</string>
+    <string name="documents">Documents</string>
+
+    <!-- Toast -->
+    <string name="open_user_profile">Open user profile</string>
+    <string name="open_settings">Open settings</string>
+
+    <!--회원가입-->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_name">Fullname</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_register">REGISTER</string>
+    <string name="btn_link_to_register">Not a member? Sign up now.</string>
+    <string name="btn_link_to_login">Already registred! Login Me.</string>
+    <string name="welcome">Welcome</string>
+    <string name="btn_logout">LOGOUT</string>
+    <string name="name">Fullname</string>
+    <string name="hint_sex">Sex</string>
+    <string name="hint_age">Age</string>
+    <string name="hint_location">Location</string>
+
+    <string name="point">point</string>
+    <string name="example">Example</string>
+    <string name="triple_icon_description">Triple Icon</string>
+    <string name="triple_user_name_placeholder">User</string>
+    <string name="triple_status_placeholder">Status</string>
+    <string name="triple_contact_placeholder">Contact</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="age">나이</string>
+
+
+</resources>

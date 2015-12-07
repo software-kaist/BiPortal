@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="XMLSchema1"
+    targetNamespace="http://tempuri.org/XMLSchema1.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/XMLSchema1.xsd"
+    xmlns:mstns="http://tempuri.org/XMLSchema1.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+  <xs:element name ="PowerSensor">
+    <xs:simpleType>
+      <xs:restriction base="xs:boolean"></xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+
+
+  <xs:element name ="SpeedSensor">
+    <xs:simpleType>
+      <xs:restriction base="xs:double"></xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+
+  <xs:element name ="PositionSensorLat">
+    <xs:simpleType>
+      <xs:restriction base="xs:double"></xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name ="PositionSensorLng">
+    <xs:simpleType>
+      <xs:restriction base="xs:double"></xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  <xs:element name ="PositionSensorAlt">
+    <xs:simpleType>
+      <xs:restriction base="xs:double"></xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+
+  <xs:element name ="RPMSensor">
+    <xs:simpleType>
+      <xs:restriction base="xs:double"></xs:restriction>
+    </xs:simpleType>    
+  </xs:element>
+
+  <xs:element name ="BreakSensor">
+    <xs:simpleType>
+      <xs:restriction base="xs:boolean"></xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+    
+</xs:schema>

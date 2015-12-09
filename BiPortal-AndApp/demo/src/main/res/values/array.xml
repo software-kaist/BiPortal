@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="selected">
+        <item>50 m</item>
+        <item>100 m</item>
+        <item>200 m</item>
+        <item>500 m</item>
+        <item>1 km</item>
+    </string-array>
+</resources>

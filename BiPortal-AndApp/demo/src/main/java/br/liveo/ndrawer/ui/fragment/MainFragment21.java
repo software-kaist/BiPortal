@@ -15,20 +15,26 @@
  */
 package br.liveo.ndrawer.ui.fragment;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import br.liveo.ndrawer.R;
+import br.liveo.ndrawer.ui.adapter.CourseInfo;
+import br.liveo.ndrawer.ui.adapter.CourseInfoAdapter;
+import br.liveo.ndrawer.ui.adapter.RequestClass;
 
 // 추천 - 탭 중에서 코스 화면
 public class MainFragment21 extends Fragment {
@@ -36,9 +42,15 @@ public class MainFragment21 extends Fragment {
     private boolean mSearchCheck;
     private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
 
+	private CourseInfoAdapter mCourseInfoAdapter;
+	private ArrayList<CourseInfo> mCourseInfoList;
+	View rootView;
+
+	static Bundle mBundle;
+
 	public static MainFragment21 newInstance(String text){
 		MainFragment21 mFragment = new MainFragment21();
-		Bundle mBundle = new Bundle();
+		mBundle = new Bundle();
 		mBundle.putString(TEXT_FRAGMENT, text);
 		mFragment.setArguments(mBundle);
 		return mFragment;
@@ -48,19 +60,79 @@ public class MainFragment21 extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub		
-		View rootView = inflater.inflate(R.layout.fragment_main21, container, false);
-
-		// 여기에 MainFragment12 에서 한것과 마찬가지로 코스 불러와서 리스트로 만들어야 함
-		// 현재 화면 구성 xml은 없는 상태
-		// 리스트 클릭했을 때, 디테일 페이지 xml 만들어야 함
-
-
-
-		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT ));		
+		rootView = inflater.inflate(R.layout.fragment_main21, container, false);
+		
+		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		return rootView;		
 	}
-	
+
+	private void getAllRecoCourseList() {
+		String url = "http://125.131.73.198:3000/getAllRecoCourseList";
+		GetAllRecoCourseList getAllRecoCourseList = new GetAllRecoCourseList();
+		getAllRecoCourseList.execute(url);
+	}
+
+	private class GetAllRecoCourseList extends AsyncTask<String, Void, String> {
+		String url = null;
+		String response;
+		// Invoked by execute() method of this object
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				url = params[0];
+				RequestClass rc = new RequestClass(url);
+				rc.Execute(1);
+				response = rc.getResponse();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return response;
+		}
+
+		// Executed after the complete execution of doInBackground() method
+		@Override
+		protected void onPostExecute(String response) {
+			mCourseInfoAdapter = new CourseInfoAdapter(getContext(), R.layout.course, mBundle);
+			mCourseInfoList = new ArrayList<CourseInfo>();
+
+			try {
+				JSONArray arr = new JSONArray(response);
+				for (int i = 0; i < arr.length(); i++) {
+					JSONObject obj = arr.getJSONObject(i);
+					CourseInfo ri = new CourseInfo(obj.getInt("coursenum"), obj.getString("coursename"), obj.getDouble("coursestartlat"),
+							obj.getDouble("coursestatlng"), obj.getDouble("courseendlat"), obj.getDouble("courseendlng"),
+							obj.getDouble("courselength"), obj.getInt("courseage"), obj.getInt("coursehard"), obj.getString("coursesex"));
+					mCourseInfoList.add(ri);
+				}
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+
+			mCourseInfoAdapter.setCourseInfoList(mCourseInfoList);
+
+			ListView list;
+			list = (ListView)rootView.findViewById(R.id.courseList);
+			list.setAdapter(mCourseInfoAdapter);
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+				}
+			});
+
+		}
+	}
+
 	@Override
+	public void onResume(){
+		super.onResume();
+		getAllRecoCourseList();
+	}
+
+
+
+	/*@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
@@ -95,9 +167,9 @@ public class MainFragment21 extends Fragment {
 		
 		switch (item.getItemId()) {
 
-		/*case R.id.menu_add:
+		*//*case R.id.menu_add:
             Toast.makeText(getActivity(), R.string.add, Toast.LENGTH_SHORT).show();
-			break;*/
+			break;*//*
 
 		case R.id.menu_search:
 			mSearchCheck = true;
@@ -120,5 +192,5 @@ public class MainFragment21 extends Fragment {
            }
            return false;
        }
-   };
+   };*/
 }

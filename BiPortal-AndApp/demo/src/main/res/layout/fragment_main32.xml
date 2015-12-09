@@ -26,8 +26,7 @@
         android:id="@+id/deviceList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnRefresh"
-        android:divider="@color/accent"/>
+        android:layout_below="@+id/btnRefresh"/>
 
 
     <Button

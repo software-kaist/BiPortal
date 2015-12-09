@@ -18,24 +18,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <ImageView
-        android:id="@+id/imgLiveo52"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="121dp"
-        android:contentDescription="@string/clear"
-        android:src="@mipmap/ic_liveo" />
-
-    <TextView
-        android:id="@+id/txtTitle52"
+    <ListView
+        android:id="@+id/steal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imgLiveo42"
-        android:gravity="center"
-        android:textColor="@color/nliveo_black"
-        android:layout_marginTop="16dp"
-        android:text="@string/clear"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:divider="#b5b5b5"
+        android:dividerHeight="1dp"
+        android:layout_marginTop="5dp"/>
+
 </RelativeLayout>

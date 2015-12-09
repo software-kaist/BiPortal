@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dip" >
+
+    <!--  ListRow Left sied Thumbnail image -->
+    <LinearLayout android:id="@+id/coursethumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dip"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/coursemap"
+            android:layout_width="300dip"
+            android:layout_height="300dip"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/coursename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/coursethumbnail"
+        android:layout_toRightOf="@+id/coursethumbnail"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="23dip"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/courselength"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/coursename"
+        android:textColor="#343434"
+        android:textSize="15dip"
+        android:layout_marginTop="5dip"
+        android:layout_toRightOf="@+id/coursethumbnail" />
+
+    <TextView
+        android:id="@+id/coursehard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12dip"
+        android:layout_marginTop="5dip"
+        android:layout_below="@id/courselength"
+        android:layout_toRightOf="@+id/coursethumbnail"/>
+
+    <ImageView
+        android:src="@drawable/right_arrow"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+
+</RelativeLayout>

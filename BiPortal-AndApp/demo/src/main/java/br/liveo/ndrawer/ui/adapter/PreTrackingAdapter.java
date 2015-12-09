@@ -56,16 +56,14 @@ public class PreTrackingAdapter extends BaseAdapter {
         }
 
         TextView date = (TextView)convertView.findViewById(R.id.preDate);
-        date.setText(mPreTrackingList.get(position).getDate());
+        date.setText(mPreTrackingList.get(position).getEnrolldate().substring(0, 10));
 
         TextView distance = (TextView)convertView.findViewById(R.id.preDistance);
-        distance.setText(mPreTrackingList.get(position).getDistance());
+        distance.setText("거리 " + String.format("%.1f",mPreTrackingList.get(position).getDistance()) + " km");
 
         TextView time = (TextView)convertView.findViewById(R.id.preTime);
-        time.setText(mPreTrackingList.get(position).getTime());
+        time.setText("시간 " + mPreTrackingList.get(position).getTotaltime());
 
-        TextView addr = (TextView)convertView.findViewById(R.id.preAddress);
-        addr.setText(mPreTrackingList.get(position).getAddress());
 
         // TODO: list item setting
 

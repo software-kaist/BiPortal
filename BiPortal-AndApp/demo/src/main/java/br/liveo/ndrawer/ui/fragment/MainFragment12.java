@@ -15,12 +15,13 @@
  */
 package br.liveo.ndrawer.ui.fragment;
 
-import android.app.Activity;
-import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,14 +32,20 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import br.liveo.ndrawer.R;
+import br.liveo.ndrawer.ui.activity.MapActivity;
+import br.liveo.ndrawer.ui.adapter.MyBeaconDevice;
+import br.liveo.ndrawer.ui.adapter.MyDeviceListAdpater;
 import br.liveo.ndrawer.ui.adapter.PreTracking;
 import br.liveo.ndrawer.ui.adapter.PreTrackingAdapter;
+import br.liveo.ndrawer.ui.adapter.RequestClass;
 
 
 // 트레킹 - 탭 중에서 과거이력 화면
@@ -48,6 +55,9 @@ public class MainFragment12 extends Fragment {
     private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
 	private PreTrackingAdapter mPreTrackingAdapter;
 	private ArrayList<PreTracking> mPreTrackingList;
+
+	private SharedPreferences prefs;
+	View rootView;
 
 	public static MainFragment12 newInstance(String text){
 		MainFragment12 mFragment = new MainFragment12();
@@ -61,17 +71,16 @@ public class MainFragment12 extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub		
-		View rootView = inflater.inflate(R.layout.fragment_main12, container, false);
+		rootView = inflater.inflate(R.layout.fragment_main12, container, false);
 		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT ));
 
-		mPreTrackingAdapter = new PreTrackingAdapter(getContext(), R.layout.pretracking);
-		mPreTrackingList = new ArrayList<PreTracking>();
+
 
 		// 실제로 여기서 디비에 가서 저장된 과거 이력 데이터 불러와서
 		// new PreTracking에 으로 만들어서 ArrayList 저장
 		// 현재는 이런식으로 보여주면 어떨가 해서 값을 스태틱하게 넣은 상태
 
-		for(int i = 0; i < 5; i++){
+		/*for(int i = 0; i < 5; i++){
 			String transI = String.valueOf(i);
 			PreTracking pt = new PreTracking("date"+i, "distance"+i, "time"+i, "addr"+i);
 			mPreTrackingList.add(pt);
@@ -97,10 +106,92 @@ public class MainFragment12 extends Fragment {
 				Toast toast  = Toast.makeText(getContext(), date + "/" + time + "/" + distance + "/" + address, Toast.LENGTH_LONG);
 				toast.show();
 			}
-		});
+		});*/
 
 		return rootView;		
 	}
+
+	private void getMyPreTracking() {
+		mPreTrackingAdapter = new PreTrackingAdapter(getContext(), R.layout.pretracking);
+		mPreTrackingList = new ArrayList<PreTracking>();
+
+		String url = "http://125.131.73.198:3000/getMyPreTracking";
+		prefs = getActivity().getSharedPreferences("PrefName", getContext().MODE_PRIVATE);
+		String useremail = prefs.getString("useremail","");
+
+		GetMyPreTracking getMyPreTracking = new GetMyPreTracking();
+		getMyPreTracking.execute(url, useremail);
+	}
+
+	private class GetMyPreTracking extends AsyncTask<String, Void, String> {
+		String url = null;
+		String useremail = null;
+		String response;
+		// Invoked by execute() method of this object
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				url = params[0];
+				useremail = params[1];
+				RequestClass rc = new RequestClass(url);
+				rc.AddParam("useremail", useremail);
+				rc.Execute(1);
+				response = rc.getResponse();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return response;
+		}
+
+		// Executed after the complete execution of doInBackground() method
+		@Override
+		protected void onPostExecute(String response) {
+			int usePosition = -1;
+			try {
+				JSONArray arr = new JSONArray(response);
+
+				for (int i = 0; i < arr.length(); i++){
+					JSONObject obj = arr.getJSONObject(i);
+					Log.i("azzzz", obj.getInt("trackid") + "/" + obj.getString("useremail") + "/" + obj.getDouble("distance") + "/" + obj.getString("totaltime") + "/" + obj.getString("enrolldate"));
+					PreTracking pt = new PreTracking(obj.getInt("trackid"), obj.getString("useremail"), obj.getDouble("distance"), obj.getString("totaltime"), obj.getString("enrolldate"));
+
+					mPreTrackingList.add(pt);
+				}
+			} catch(Exception e){
+				e.printStackTrace();
+			}
+
+			mPreTrackingAdapter.setPreTrackingList(mPreTrackingList);
+
+			final ListView list;
+			list = (ListView)rootView.findViewById(R.id.preTracking);
+
+			list.setAdapter(mPreTrackingAdapter);
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					Intent intent = new Intent(getActivity(), MapActivity.class);
+					Bundle b = new Bundle();
+					b.putInt("trackid", mPreTrackingList.get(position).getTrackid());
+					b.putDouble("distance", mPreTrackingList.get(position).getDistance());
+					b.putString("totaltime", mPreTrackingList.get(position).getTotaltime());
+					//	b.putString("restimage", r.getRestImage());
+					//	b.putString("restcategory", r.getRestCategory());
+					intent.putExtras(b);
+					startActivity(intent);
+
+				}
+			});
+		}
+	}
+
+	@Override
+	public void onResume(){
+		getMyPreTracking();
+		super.onResume();
+	}
+
 	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {

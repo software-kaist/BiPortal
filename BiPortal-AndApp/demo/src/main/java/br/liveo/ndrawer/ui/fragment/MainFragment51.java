@@ -15,26 +15,39 @@
  */
 package br.liveo.ndrawer.ui.fragment;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Button;
 
 import br.liveo.ndrawer.R;
+import br.liveo.ndrawer.ui.adapter.RequestClass;
+import br.liveo.ndrawer.ui.mjpeg.DoRead;
+import br.liveo.ndrawer.ui.mjpeg.MjpegInputStream;
+import br.liveo.ndrawer.ui.mjpeg.MjpegView;
+import br.liveo.ndrawer.ui.sensortag.MovementProfile;
 
-// 내정보 - 탭 중에서 등록자전거 화면
+// 도난 - 실시간화면
 public class MainFragment51 extends Fragment {
+	private boolean mSearchCheck;
+	private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
 
-    private boolean mSearchCheck;
-    private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
+	private boolean showFps = false;
+	private AlertDialog.Builder dialog;
+	private static Button changeableButton;
+	MjpegView mv;
+	View rootView;
 
 	// Stops scanning after 10 seconds.
 	private static final long SCAN_PERIOD = 10000;
@@ -44,20 +57,157 @@ public class MainFragment51 extends Fragment {
 		Bundle mBundle = new Bundle();
 		mBundle.putString(TEXT_FRAGMENT, text);
 		mFragment.setArguments(mBundle);
+
 		return mFragment;
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+							 Bundle savedInstanceState) {
 		// TODO Auto-generated method stub		
-		View rootView = inflater.inflate(R.layout.fragment_main51, container, false);
+		rootView = inflater.inflate(R.layout.fragment_main51, container, false);
+		mv = (MjpegView) rootView.findViewById(R.id.stream);
+		changeableButton = (Button)rootView.findViewById(R.id.changeableButton);
 
-		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT ));		
-		return rootView;		
+		if(MovementProfile.mLastKnownMotionX > 50){
+			Vibration vb = new Vibration();
+			vb.execute();
+		}
+
+		changeableButton.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v){
+				changeButton();
+			}
+		});
+
+		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		return rootView;
 	}
-	
+
+	private class Vibration extends AsyncTask<String, Void, String> {
+		// Invoked by execute() method of this object
+		String response = null;
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				String useremail = "a@ac.kr";
+				RequestClass rc = new RequestClass("http://125.131.73.198:3000/vibration");
+				rc.AddParam("useremail", useremail);
+				rc.Execute(1);
+	            response = rc.getResponse();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return response;
+		}
+
+		// Executed after the complete execution of doInBackground() method
+		@Override
+		protected void onPostExecute(String response) {
+			if (response.length() != 0) {
+
+			} else {
+
+			}
+		}
+	}
+
+
+	public void onPause() {
+		super.onPause();
+		mv.stopPlayback();
+	}
+
+	public void onStop() {
+		super.onStop();
+		mv.stopPlayback();
+		mv.setBackgroundColor(Color.BLACK);
+	}
+
+	public View getFragmentView(){
+		return rootView;
+	}
+
+	public void changeButton() {
+		boolean isTextStart = "Start".equals(changeableButton.getText());
+
+		if(isTextStart) {
+			changeableButton.setText("Stop");
+			start(getContext());
+		}
+		else {
+			changeableButton.setText("Start");
+			onStop();
+		}
+	}
+
+	public void startStop(View v){
+		if ( isConnection() ) {
+			changeButton();
+		} else {
+			dialog.show();
+		}
+	}
+
+	public boolean isConnection(){
+		ConnectivityManager connMgr = (ConnectivityManager)
+				getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		return networkInfo != null && networkInfo.isConnected();
+	}
+
 	@Override
+	public void onResume() {
+		super.onResume();
+
+		boolean isTextStart = "Start".equals(changeableButton.getText());
+		if (!isTextStart) {
+			start(getContext());
+		}
+	}
+
+
+	public void start(final Context context) {
+		// Write the correct ip of your local conection.
+		// The port (8081) must not be changed
+		String URL = "http://125.131.73.198:8081";
+
+		DoRead.DoReadCallback callback = new DoRead.DoReadCallback() {
+			@Override
+			public void onFinish(MjpegInputStream result) {
+				Log.wtf("MainFragment51", "onFinish");
+				mv.setBackgroundColor(Color.TRANSPARENT);
+				mv.setSource(result);
+				mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
+				showFps = !showFps;
+				mv.showFps( showFps );
+			}
+
+			@Override
+			public void onError(String errorMsg) {
+				Log.wtf("Error", errorMsg);
+				createDialog(context);
+				dialog.show();
+			}
+		};
+
+		new DoRead(callback, context).execute(URL);
+
+	}
+
+	public void createDialog(Context context) {
+		dialog = new AlertDialog.Builder(context);
+		dialog.setTitle("There is no video in the server");
+		dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+	}
+
+	/*@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
@@ -92,9 +242,9 @@ public class MainFragment51 extends Fragment {
 		
 		switch (item.getItemId()) {
 
-		/*case R.id.menu_add:
+		*//*case R.id.menu_add:
             Toast.makeText(getActivity(), R.string.add, Toast.LENGTH_SHORT).show();
-			break;*/
+			break;*//*
 
 		case R.id.menu_search:
 			mSearchCheck = true;
@@ -117,5 +267,5 @@ public class MainFragment51 extends Fragment {
            }
            return false;
        }
-   };
+   };*/
 }

@@ -15,28 +15,35 @@
  */
 package br.liveo.ndrawer.ui.fragment;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.SearchView;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.EditText;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 import br.liveo.ndrawer.R;
+import br.liveo.ndrawer.ui.activity.GalleryActivity;
+import br.liveo.ndrawer.ui.activity.MainActivity;
+import br.liveo.ndrawer.ui.adapter.StealInfo;
+import br.liveo.ndrawer.ui.adapter.StealInfoAdapter;
 
 // 내정보 - 탭 중에서 등록자전거 화면
 public class MainFragment52 extends Fragment {
 
-    private boolean mSearchCheck;
-    private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
-
-	// Stops scanning after 10 seconds.
-	private static final long SCAN_PERIOD = 10000;
+	private boolean mSearchCheck;
+	private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
+	private StealInfoAdapter mStealAdapter;
+	private ArrayList<StealInfo> mStealList;
+	View rootView;
 
 	public static MainFragment52 newInstance(String text){
 		MainFragment52 mFragment = new MainFragment52();
@@ -45,18 +52,129 @@ public class MainFragment52 extends Fragment {
 		mFragment.setArguments(mBundle);
 		return mFragment;
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+							 Bundle savedInstanceState) {
 		// TODO Auto-generated method stub		
-		View rootView = inflater.inflate(R.layout.fragment_main52, container, false);
+		rootView = inflater.inflate(R.layout.fragment_main52, container, false);
+		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT ));
 
-		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT ));		
-		return rootView;		
+		mStealAdapter = new StealInfoAdapter(getContext(), R.layout.steal);
+		mStealList = new ArrayList<StealInfo>();
+
+		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT ));
+		return rootView;
+	}
+
+	private void getStealInfoList(){
+		Log.i("뭔데", "왜 나오던게 안나와>");
+		GetStealInfoList getStealInfoList = new GetStealInfoList();
+		getStealInfoList.execute();
+	}
+
+	private class GetStealInfoList extends AsyncTask<String, Void, String> {
+
+		String url = null;
+		String useremail = null;
+		String response;
+		// Invoked by execute() method of this object
+
+		@Override
+		protected String doInBackground(String... params) {
+			Log.i("뭔데", "나랑 장난하니?");
+			/*try {
+				url = params[0];
+				useremail = params[1];
+				beaconmac = params[2];
+				beaconname = params[3];
+				RequestClass rc = new RequestClass(url);
+				rc.AddParam("useremail", useremail);
+				rc.AddParam("beaconmac", beaconmac);
+				rc.AddParam("beaconname", beaconname);
+				rc.Execute(1);
+				response = rc.getResponse();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return response;*/
+			return "good";
+		}
+
+		// Executed after the complete execution of doInBackground() method
+		@Override
+		protected void onPostExecute(String response) {
+			Log.i("return respone", response);
+			for(int i = 0; i < 5; i++){
+				String transI = String.valueOf(i);
+				StealInfo pt = null;
+				if(i % 2 == 0){
+					pt = new StealInfo("steal", "date"+i, "addr"+i);
+				} else {
+					pt = new StealInfo("vibration", "date"+i, "addr"+i);
+				}
+
+				mStealList.add(pt);
+			}
+
+			// ArrayList 저장 끝나면 리스트 만들기
+			mStealAdapter.setStealInfoList(mStealList);
+
+			ListView list;
+			list = (ListView)rootView.findViewById(R.id.steal);
+			list.setAdapter(mStealAdapter);
+
+			// 클릭했을 때 디테일 페이지 또는 다이알로그 xml 만들어야 함
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					startGalleryActivity();
+				/*final String category = mStealAdapter.getStealInfoList().get(position).getCategory();
+				final String date = mStealAdapter.getStealInfoList().get(position).getDate();
+				final String addr = mStealAdapter.getStealInfoList().get(position).getAddr();
+
+				Toast toast  = Toast.makeText(getContext(), category + "/" + date + "/" + addr, Toast.LENGTH_LONG);
+				toast.show();*/
+				}
+			});
+			/*if (response.length() != 0) {
+				successDialog();
+			} else {
+				failDialog();
+			}*/
+		}
+	}
+
+	private void startGalleryActivity() {
+		ArrayList<String> images = new ArrayList<String>();
+		images.add("http://sourcey.com/images/stock/salvador-dali-metamorphosis-of-narcissus.jpg");
+		images.add("http://sourcey.com/images/stock/salvador-dali-the-dream.jpg");
+		images.add("http://sourcey.com/images/stock/salvador-dali-persistence-of-memory.jpg");
+		images.add("http://sourcey.com/images/stock/simpsons-persistence-of-memory.jpg");
+		images.add("http://sourcey.com/images/stock/salvador-dali-the-great-masturbator.jpg");
+		images.add("http://sourcey.com/images/stock/salvador-dali-metamorphosis-of-narcissus.jpg");
+		images.add("http://sourcey.com/images/stock/salvador-dali-the-dream.jpg");
+		images.add("http://sourcey.com/images/stock/salvador-dali-persistence-of-memory.jpg");
+		images.add("http://sourcey.com/images/stock/simpsons-persistence-of-memory.jpg");
+		images.add("http://sourcey.com/images/stock/salvador-dali-the-great-masturbator.jpg");
+		Intent intent = new Intent(getActivity(), GalleryActivity.class);
+		intent.putStringArrayListExtra(GalleryActivity.EXTRA_NAME, images);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onResume(){
+		getStealInfoList();
+		super.onResume();
+	}
+
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
 	}
 	
-	@Override
+	/*@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
@@ -91,9 +209,9 @@ public class MainFragment52 extends Fragment {
 		
 		switch (item.getItemId()) {
 
-		/*case R.id.menu_add:
+		*//*case R.id.menu_add:
             Toast.makeText(getActivity(), R.string.add, Toast.LENGTH_SHORT).show();
-			break;*/
+			break;*//*
 
 		case R.id.menu_search:
 			mSearchCheck = true;
@@ -116,5 +234,5 @@ public class MainFragment52 extends Fragment {
            }
            return false;
        }
-   };
+   };*/
 }

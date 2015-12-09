@@ -17,39 +17,36 @@ package br.liveo.ndrawer.ui.fragment;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import br.liveo.ndrawer.R;
 import br.liveo.ndrawer.ui.activity.MainActivity;
-import br.liveo.ndrawer.ui.adapter.BeaconDevice;
 import br.liveo.ndrawer.ui.adapter.DeviceListAdapter;
+import br.liveo.ndrawer.ui.adapter.RequestClass;
 
 // 등록 - 탭 중에서 자전거 화면
 public class MainFragment32 extends Fragment {
-    private boolean mSearchCheck;
-    private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
+	private boolean mSearchCheck;
+	private static final String TEXT_FRAGMENT = "TEXT_FRAGMENT";
 	private BluetoothAdapter mBluetoothAdapter;
 	OnMainFragment32SelectedListener mCallback;
+
+	private SharedPreferences prefs;
+	private View rootView;
+	private ListView list;
 
 	public static MainFragment32 newInstance(String text){
 		MainFragment32 mFragment = new MainFragment32();
@@ -63,6 +60,8 @@ public class MainFragment32 extends Fragment {
 	public interface OnMainFragment32SelectedListener{
 		void onBtnListRefreshClicked();
 		DeviceListAdapter getAdapter();
+		void scanLeDevice(final boolean enable);
+		void bleStop();
 	}
 
 	@Override
@@ -78,102 +77,135 @@ public class MainFragment32 extends Fragment {
 					+ " must implement OnMainFragment32SelectedListener");
 		}
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+							 Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-	    View rootView = inflater.inflate(R.layout.fragment_main32, container, false);
+		rootView = inflater.inflate(R.layout.fragment_main32, container, false);
 
- /*       TextView mTxtTitle = (TextView) rootView.findViewById(R.id.txtTitle32);
-        mTxtTitle.setText(getArguments().getString(TEXT_FRAGMENT));*/
+		list = (ListView)rootView.findViewById(R.id.deviceList);
 
 		rootView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
-		// TODO: List item 얻어오기
-		mCallback.onBtnListRefreshClicked();
-		// TODO: List 구성하기
-		ListView list;
-		list = (ListView)rootView.findViewById(R.id.deviceList);
-		list.setAdapter(mCallback.getAdapter());
-
-		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				final String useremail = "onlyboys@kaist.ac.kr";
-				final String addr = mCallback.getAdapter().getDeviceList().get(position).getBdAddr();
-				final String name = mCallback.getAdapter().getDeviceList().get(position).getBdName();
-
-				// TODO: 등록 팝업 띄우기
-				AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-				// Setting Dialog Title
-				alertDialog.setTitle("비콘 등록 확인");
-
-				// Setting Dialog Message
-				alertDialog.setMessage("선택하신 비콘을 등록하시겠습니까?");
-
-				// Setting Icon to Dialog
-				alertDialog.setIcon(R.drawable.ic_dialog_alert);
-
-				// Setting Positive "Yes" Button
-				alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int which) {
-						// Write your code here to invoke YES event
-						Toast toast  = Toast.makeText(getContext(), useremail + "/" + addr + "/" + name, Toast.LENGTH_LONG);
-						toast.show();
-						dialog.cancel();
-
-						// 성공
-						successDialog();
-
-						// 실패
-						//failDialog();
-
-						// 서버로 가서 선택한 비콘 등록하기
-
-					}
-				});
-
-				// Setting Negative "NO" Button
-				alertDialog.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						// Write your code here to invoke NO event
-						dialog.cancel();
-					}
-				});
-
-				// Showing Alert Message
-				alertDialog.show();
-
-			}
-		});
 
 		Button deviceRefresh = (Button)rootView.findViewById(R.id.btnRefresh);
 		// button events
 		deviceRefresh.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+
+				MainActivity mainActivity = (MainActivity)getActivity();
+
+
+				mainActivity.action = 0;
+
+				mCallback.scanLeDevice(true);
 				mCallback.onBtnListRefreshClicked();
+			//	mCallback.scanLeDevice(false);
 			}
 		});
-		return rootView;		
+		return rootView;
+	}
+
+	private void getSearchBeaconList(){
+		GetSearchBeaconList getSearchBeaconList = new GetSearchBeaconList();
+		getSearchBeaconList.execute();
+	}
+
+	private class GetSearchBeaconList extends AsyncTask<String, Void, String> {
+		// Invoked by execute() method of this object
+		String returnValue = "doInBackGroundFinish";
+		@Override
+		protected String doInBackground(String... params) {
+			mCallback.onBtnListRefreshClicked();
+			return returnValue;
+		}
+
+		// Executed after the complete execution of doInBackground() method
+		@Override
+		protected void onPostExecute(String returnValue) {
+			list.setAdapter(mCallback.getAdapter());
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					prefs = getActivity().getSharedPreferences("PrefName", getContext().MODE_PRIVATE);
+					final String useremail = prefs.getString("useremail","");
+					final String addr = mCallback.getAdapter().getDeviceList().get(position).getBdAddr();
+					final String name = mCallback.getAdapter().getDeviceList().get(position).getBdName();
+
+					AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+					alertDialog.setTitle("비콘 등록 확인");
+					alertDialog.setMessage("선택하신 비콘을 등록하시겠습니까?");
+					alertDialog.setIcon(R.drawable.alert);
+
+					alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							BeaconEnroll beaconEnroll = new BeaconEnroll();
+							if(name == null){
+								beaconEnroll.execute("http://125.131.73.198:3000/beaconEnroll", useremail, addr, "temp");
+							} else {
+								beaconEnroll.execute("http://125.131.73.198:3000/beaconEnroll", useremail, addr, name);
+							}
+						}
+					});
+
+					alertDialog.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
+					alertDialog.show();
+				}
+			});
+		}
+	}
+
+	private class BeaconEnroll extends AsyncTask<String, Void, String> {
+		String url = null;
+		String useremail = null;
+		String beaconmac = null;
+		String beaconname = null;
+		String response;
+		// Invoked by execute() method of this object
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				url = params[0];
+				useremail = params[1];
+				beaconmac = params[2];
+				beaconname = params[3];
+				RequestClass rc = new RequestClass(url);
+				rc.AddParam("useremail", useremail);
+				rc.AddParam("beaconmac", beaconmac);
+				rc.AddParam("beaconname", beaconname);
+				rc.Execute(1);
+				response = rc.getResponse();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return response;
+		}
+
+		// Executed after the complete execution of doInBackground() method
+		@Override
+		protected void onPostExecute(String response) {
+			if (response.length() != 0) {
+				successDialog();
+			} else {
+				failDialog();
+			}
+		}
 	}
 
 	private void successDialog(){
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-		// Setting Dialog Title
 		alertDialog.setTitle("비콘 등록 완료");
-
-		// Setting Dialog Message
 		alertDialog.setMessage("선택한 비콘이 등록되었습니다");
-
-		// Setting Icon to Dialog
 		alertDialog.setIcon(R.drawable.ic_dialog_alert);
 
-		// Setting Positive "Yes" Button
 		alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog,int which) {
-				// Write your code here to invoke YES event
+			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
 
 				Fragment mFragment;
@@ -181,30 +213,24 @@ public class MainFragment32 extends Fragment {
 
 				mFragment = new ViewPagerFragment3();
 
-				if (mFragment != null){
+				if (mFragment != null) {
 					mFragmentManager.beginTransaction().replace(R.id.container, mFragment).commit();
 				}
 			}
 		});
+
 
 		alertDialog.show();
 	}
 
 	private void failDialog(){
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-		// Setting Dialog Title
 		alertDialog.setTitle("비콘 등록 실패");
+		alertDialog.setMessage("이미 등록된 비콘입니다");
+		alertDialog.setIcon(R.drawable.fail);
 
-		// Setting Dialog Message
-		alertDialog.setMessage("다시 시도해 주세요");
-
-		// Setting Icon to Dialog
-		alertDialog.setIcon(R.drawable.ic_dialog_alert);
-
-		// Setting Positive "Yes" Button
 		alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog,int which) {
-				// Write your code here to invoke YES event
+			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();
 			}
 		});
@@ -212,8 +238,28 @@ public class MainFragment32 extends Fragment {
 		alertDialog.show();
 	}
 
-	
+	private void limitDialog(){
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+		alertDialog.setTitle("비콘 등록 실패");
+		alertDialog.setMessage("최대 등록 가능한 비콘은 6개입니다");
+		alertDialog.setIcon(R.drawable.fail);
+
+		alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+
+		alertDialog.show();
+	}
 	@Override
+	public void onResume(){
+		super.onResume();
+		getSearchBeaconList();
+	}
+
+	
+	/*@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
@@ -248,9 +294,9 @@ public class MainFragment32 extends Fragment {
 		
 		switch (item.getItemId()) {
 
-		/*case R.id.menu_add:
+		*//*case R.id.menu_add:
             Toast.makeText(getActivity(), R.string.add, Toast.LENGTH_SHORT).show();
-			break;*/
+			break;*//*
 
 		case R.id.menu_search:
 			mSearchCheck = true;
@@ -273,5 +319,5 @@ public class MainFragment32 extends Fragment {
            }
            return false;
        }
-   };
+   };*/
 }

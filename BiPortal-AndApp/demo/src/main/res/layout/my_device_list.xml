@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView
+        android:id="@+id/myDeviceName"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/myDeviceID"
+        android:textColor="@color/nliveo_black"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/myDeviceName" />
+
+    <!--<Button
+        android:id="@+id/delete"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/myDeviceName"
+        android:layout_centerVertical="true"
+        android:background="@drawable/delete"/>-->
+
+</RelativeLayout>

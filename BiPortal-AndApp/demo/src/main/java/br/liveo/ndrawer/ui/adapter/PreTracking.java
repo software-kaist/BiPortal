@@ -4,47 +4,57 @@ package br.liveo.ndrawer.ui.adapter;
  * Created by Administrator on 2015-11-06.
  */
 public class PreTracking {
-    private String date;
-    private String distance;
-    private String time;
-    private String address;
+    private int trackid;
+    private String useremail;
+    private double distance;
+    private String totaltime;
+    private String enrolldate;
 
-    public PreTracking(String date, String distance, String time, String address) {
-        this.date = date;
+    public PreTracking(int trackid, String useremail, double distance, String totaltime, String enrolldate) {
+        this.trackid = trackid;
+        this.useremail = useremail;
         this.distance = distance;
-        this.time = time;
-        this.address = address;
+        this.totaltime = totaltime;
+        this.enrolldate = enrolldate;
     }
 
-    public String getDate() {
-        return date;
+    public int getTrackid() {
+        return trackid;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setTrackid(int trackid) {
+        this.trackid = trackid;
     }
 
-    public String getDistance() {
+    public String getUseremail() {
+        return useremail;
+    }
+
+    public void setUseremail(String useremail) {
+        this.useremail = useremail;
+    }
+
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(String distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 
-    public String getTime() {
-        return time;
+    public String getTotaltime() {
+        return totaltime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setTotaltime(String totaltime) {
+        this.totaltime = totaltime;
     }
 
-    public String getAddress() {
-        return address;
+    public String getEnrolldate() {
+        return enrolldate;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setEnrolldate(String enrolldate) {
+        this.enrolldate = enrolldate;
     }
 }

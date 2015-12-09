@@ -166,6 +166,22 @@ public class MainFragment extends Fragment {
     private void updateEvent(String event) {
         RequestEpcisCapture erc = new RequestEpcisCapture();
 
+        String eventDate = new SimpleDateFormat("yyyy-MM-dd").format((System.currentTimeMillis()));
+        String eventTime = new SimpleDateFormat("HH:mm:ss").format((System.currentTimeMillis()));
+
+        Location location = null;
+
+        try {
+            if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if(location == null && mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+                location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }catch (SecurityException ex)
+        {
+            Log.i("Timer:", ex.getMessage());
+        }
+
         String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<!DOCTYPE project>\n" +
                 "<epcis:EPCISDocument xmlns:epcis=\"urn:epcglobal:epcis:xsd:1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
@@ -173,48 +189,33 @@ public class MainFragment extends Fragment {
                 "  <EPCISBody>\n" +
                 "    <EventList>\n" +
                 "      <ObjectEvent>\n" +
-                "        <!-- Event 시간을 넣습니다!!! (When 정보!) -->\n" +
-                "        <eventTime>2015-01-03T20:33:31.116-10:00</eventTime>\n" +
+                "        <!-- When -->\n" +
+                "        <eventTime>" + eventDate + "T" + eventTime + ".116-10:00</eventTime>\n" +
                 "        <eventTimeZoneOffset>-10:00</eventTimeZoneOffset>\n" +
-                "        <!-- When 정보 끝! -->\n" +
+                "        <!-- When! -->\n" +
                 "\n" +
-                "        <!--  What 정보.. Car ID가 들어가겠지요 Transformation 경우 input/output으로 나눠짐-->\n" +
+                "        <!--  What -->\n" +
                 "        <epcList>\n" +
-                "          <!--  차에 대한 epc 정보 -->\n" +
-                "          <epc>urn:epc:id:" +
-                "sgtin:4012345.077889.27</epc>\n" +
+                "          <epc>urn:epc:id:sgtin:1234567.123456.01</epc>\n" +
                 "        </epcList>\n" +
-                "        <!-- What에 대한 정보 끝!-->\n" +
+                "        <!-- What!-->\n" +
                 "\n" +
-                "        <!-- Add, Observe, Delete 3가지가 있음 create나 add, 혹은 파괴되거나 없어지지 않으면 observe임-->\n" +
+                "        <!-- Add, Observe, Delete -->\n" +
                 "        <action>ADD</action>\n" +
                 "\n" +
-                "        <!-- Why에 대한 정보 -->\n" +
-                "        <bizStep>urn:epcglobal:cbv:bizstep:retail_selling</bizStep>\n" +
-                "        <disposition>urn:epcglobal:cbv:disp:sellable_accessible</disposition>\n" +
-                "        <!-- Why에 대한 정보 끝-->\n" +
+                "        <!-- Why -->\n" +
+                "        <bizStep>urn:epcglobal:cbv:bizstep:"+ event +"</bizStep>\n" +
+                "        <disposition>urn:epcglobal:cbv:disp:user_accessible</disposition>\n" +
+                "        <!-- Why! -->\n" +
                 "\n" +
-                "        <!-- Where에 대한 정보, 어디서 차가 팔렸는지? 어디서 차가 고쳐졌는지 등-->\n" +
+                "        <!-- Where -->\n" +
                 "        <bizLocation>\n" +
-                "          <!-- bizLocation indicates the location of the retail shop (차 수리소? 중고차 판매소?) -->\n" +
-                "          <id>urn:epc:id:sgln:0614141.07346.1235</id>\n" +
+                "          <id>urn:epc:id:sgln:7654321.54321.1234</id>\n" +
                 "          <extension>\n" +
-                "            <geo>19.708886,-155.893430</geo>\n" +
+                "            <geo>" + location.getLatitude() + "," + location.getLongitude() + "</geo>\n" +
                 "          </extension>\n" +
                 "        </bizLocation>\n" +
-                "        <!-- Where에 대한 정보 끝-->\n" +
-                "\n" +
-                "        <!-- Car 정보-->\n" +
-                "        <car:PowerSensor>true</car:PowerSensor> <!-- Power가 켜지면 true, otherwise false-->\n" +
-                "        <car:SpeedSensor>80.0</car:SpeedSensor><!--자동차 속도값, double-->\n" +
-                "        \n" +
-                "        <!--GPS Sensor -->\n" +
-                "        <car:PositionSensorLat>1.111</car:PositionSensorLat>\n" +
-                "        <car:PositionSensorLng>2.1111</car:PositionSensorLng>\n" +
-                "        <car:PositionSensorAlt>3.11111</car:PositionSensorAlt>\n" +
-                "        \n" +
-                "        <car:RPMSensor>2000</car:RPMSensor>\n" +
-                "        <car:BreakSensor>true</car:BreakSensor> <!--break 눌리면 true, otherwise false-->\n" +
+                "        <!-- Where! -->\n" +
                 "      </ObjectEvent>\n" +
                 "    </EventList>\n" +
                 "  </EPCISBody>\n" +

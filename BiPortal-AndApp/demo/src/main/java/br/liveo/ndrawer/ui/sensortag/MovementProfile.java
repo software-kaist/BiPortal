@@ -60,16 +60,20 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import br.liveo.ndrawer.ui.activity.MainActivity;
 import br.liveo.ndrawer.ui.adapter.RequestClass;
+import br.liveo.ndrawer.ui.adapter.RequestEpcisCapture;
 import br.liveo.ndrawer.ui.fragment.MainFragment;
 
 public class MovementProfile extends GenericBluetoothProfile {
@@ -167,6 +171,7 @@ public class MovementProfile extends GenericBluetoothProfile {
 
             if(mLastKnownMotionX > 40){
                 if(status == 0){
+                    updateEvent("VIBRATION_BEACON");
                     Vibration vb = new Vibration();
                     vb.execute(useremail);
                 }
@@ -174,6 +179,67 @@ public class MovementProfile extends GenericBluetoothProfile {
 
         //    Log.i("무브", String.format("%.2f",mLastKnownMotionX) + ". " +String.format("%.2f",mLastKnownMotionY)+ "."+String.format("%.2f",mLastKnownMotionZ));
         }
+    }
+
+    private void updateEvent(String event) {
+        RequestEpcisCapture erc = new RequestEpcisCapture();
+
+        String eventDate = new SimpleDateFormat("yyyy-MM-dd").format((System.currentTimeMillis()));
+        String eventTime = new SimpleDateFormat("HH:mm:ss").format((System.currentTimeMillis()));
+
+        Location location = null;
+
+        try {
+            if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            if(location == null && mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+                location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }catch (SecurityException ex)
+        {
+            Log.i("Timer:", ex.getMessage());
+        }
+
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<!DOCTYPE project>\n" +
+                "<epcis:EPCISDocument xmlns:epcis=\"urn:epcglobal:epcis:xsd:1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "                     creationDate=\"2015-01-03T11:30:47.0Z\" schemaVersion=\"1.1\" xmlns:car=\"BiPortalGs1.xsd\">\n" +
+                "  <EPCISBody>\n" +
+                "    <EventList>\n" +
+                "      <ObjectEvent>\n" +
+                "        <!-- When -->\n" +
+                "        <eventTime>" + eventDate + "T" + eventTime + ".116-10:00</eventTime>\n" +
+                "        <eventTimeZoneOffset>-10:00</eventTimeZoneOffset>\n" +
+                "        <!-- When! -->\n" +
+                "\n" +
+                "        <!--  What -->\n" +
+                "        <epcList>\n" +
+                "          <epc>urn:epc:id:sgtin:1234567.123456.01</epc>\n" +
+                "        </epcList>\n" +
+                "        <!-- What!-->\n" +
+                "\n" +
+                "        <!-- Add, Observe, Delete -->\n" +
+                "        <action>ADD</action>\n" +
+                "\n" +
+                "        <!-- Why -->\n" +
+                "        <bizStep>urn:epcglobal:cbv:bizstep:"+ event +"</bizStep>\n" +
+                "        <disposition>urn:epcglobal:cbv:disp:user_accessible</disposition>\n" +
+                "        <!-- Why! -->\n" +
+                "\n" +
+                "        <!-- Where -->\n" +
+                "        <bizLocation>\n" +
+                "          <id>urn:epc:id:sgln:7654321.54321.1234</id>\n" +
+                "          <extension>\n" +
+                "            <geo>" + location.getLatitude() + "," + location.getLongitude() + "</geo>\n" +
+                "          </extension>\n" +
+                "        </bizLocation>\n" +
+                "        <!-- Where! -->\n" +
+                "      </ObjectEvent>\n" +
+                "    </EventList>\n" +
+                "  </EPCISBody>\n" +
+                "</epcis:EPCISDocument>";
+
+        erc.execute(xml);
     }
 
     private class Vibration extends AsyncTask<String, Void, String> {

@@ -39,6 +39,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,6 +61,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +74,7 @@ import br.liveo.ndrawer.ui.adapter.DeviceListAdapter;
 import br.liveo.ndrawer.ui.adapter.MyBeaconDevice;
 import br.liveo.ndrawer.ui.adapter.MyDeviceListAdpater;
 import br.liveo.ndrawer.ui.adapter.RequestClass;
+import br.liveo.ndrawer.ui.adapter.RequestEpcisCapture;
 import br.liveo.ndrawer.ui.sensortag.GenericBluetoothProfile;
 
 // 등록 - 탭 중에서 사용자 화면
@@ -234,6 +238,7 @@ public class MainFragment31 extends Fragment {
 
 		alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				updateEvent("BEACON_STOP");
 				StopUseBeacon stopUseBeacon = new StopUseBeacon();
 				stopUseBeacon.execute("http://125.131.73.198:3000/beaconStop", beaconmac);
 			}
@@ -293,12 +298,10 @@ public class MainFragment31 extends Fragment {
 
 		alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+
+				updateEvent("BEACON_USE");
 				UpdateUseBeacon updateUseBeacon = new UpdateUseBeacon();
 				updateUseBeacon.execute("http://125.131.73.198:3000/beaconUseUpdate", usingBeaconmac, beaconmac);
-
-
-
-
 			}
 		});
 
@@ -377,6 +380,7 @@ public class MainFragment31 extends Fragment {
 
 		alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				updateEvent("BEACON_USE");
 				UseBeacon useBeacon = new UseBeacon();
 				useBeacon.execute("http://125.131.73.198:3000/beaconUse", beaconmac);
 
@@ -407,18 +411,10 @@ public class MainFragment31 extends Fragment {
 			try {
 				url = params[0];
 				beaconmac = params[1];
-
-
 				MainActivity mainActivity = (MainActivity)getActivity();
-
 				mainActivity.scanLeDevice(true);
-
 				mainActivity.mRegisteredDevice = beaconmac;
-
 				mainActivity.action = 1;
-
-
-				Log.i("adasfa",beaconmac+"@521521521521125");
 				mainActivity.scanLeDevice(true);
 
 				/*for(int i = 0 ; i  < mCallback.getDevice().size(); i++){
@@ -457,6 +453,67 @@ public class MainFragment31 extends Fragment {
 		}
 	}
 
+	private void updateEvent(String event) {
+		RequestEpcisCapture erc = new RequestEpcisCapture();
+
+		String eventDate = new SimpleDateFormat("yyyy-MM-dd").format((System.currentTimeMillis()));
+		String eventTime = new SimpleDateFormat("HH:mm:ss").format((System.currentTimeMillis()));
+
+		Location location = null;
+
+		try {
+			if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+				location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+			if(location == null && mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+				location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}catch (SecurityException ex)
+		{
+			Log.i("Timer:", ex.getMessage());
+		}
+
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+				"<!DOCTYPE project>\n" +
+				"<epcis:EPCISDocument xmlns:epcis=\"urn:epcglobal:epcis:xsd:1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+				"                     creationDate=\"2015-01-03T11:30:47.0Z\" schemaVersion=\"1.1\" xmlns:car=\"BiPortalGs1.xsd\">\n" +
+				"  <EPCISBody>\n" +
+				"    <EventList>\n" +
+				"      <ObjectEvent>\n" +
+				"        <!-- When -->\n" +
+				"        <eventTime>" + eventDate + "T" + eventTime + ".116-10:00</eventTime>\n" +
+				"        <eventTimeZoneOffset>-10:00</eventTimeZoneOffset>\n" +
+				"        <!-- When! -->\n" +
+				"\n" +
+				"        <!--  What -->\n" +
+				"        <epcList>\n" +
+				"          <epc>urn:epc:id:sgtin:1234567.123456.01</epc>\n" +
+				"        </epcList>\n" +
+				"        <!-- What!-->\n" +
+				"\n" +
+				"        <!-- Add, Observe, Delete -->\n" +
+				"        <action>ADD</action>\n" +
+				"\n" +
+				"        <!-- Why -->\n" +
+				"        <bizStep>urn:epcglobal:cbv:bizstep:"+ event +"</bizStep>\n" +
+				"        <disposition>urn:epcglobal:cbv:disp:user_accessible</disposition>\n" +
+				"        <!-- Why! -->\n" +
+				"\n" +
+				"        <!-- Where -->\n" +
+				"        <bizLocation>\n" +
+				"          <id>urn:epc:id:sgln:7654321.54321.1234</id>\n" +
+				"          <extension>\n" +
+				"            <geo>" + location.getLatitude() + "," + location.getLongitude() + "</geo>\n" +
+				"          </extension>\n" +
+				"        </bizLocation>\n" +
+				"        <!-- Where! -->\n" +
+				"      </ObjectEvent>\n" +
+				"    </EventList>\n" +
+				"  </EPCISBody>\n" +
+				"</epcis:EPCISDocument>";
+
+		erc.execute(xml);
+	}
+
 	public void deleteBeacon(int position){
 		final String beaconmac = mMyDeviceAdapter.getDeviceList().get(position).getBdAddr();
 
@@ -467,6 +524,7 @@ public class MainFragment31 extends Fragment {
 
 		alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				updateEvent("BEACON_DELETE");
 				DeleteBeacon deleteBeacon = new DeleteBeacon();
 				deleteBeacon.execute("http://125.131.73.198:3000/beconDelete", beaconmac);
 			}

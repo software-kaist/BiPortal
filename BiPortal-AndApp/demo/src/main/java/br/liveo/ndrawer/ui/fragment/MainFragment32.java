@@ -19,11 +19,14 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +35,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.text.SimpleDateFormat;
+
 import br.liveo.ndrawer.R;
 import br.liveo.ndrawer.ui.activity.MainActivity;
 import br.liveo.ndrawer.ui.adapter.DeviceListAdapter;
 import br.liveo.ndrawer.ui.adapter.RequestClass;
+import br.liveo.ndrawer.ui.adapter.RequestEpcisCapture;
 
 // 등록 - 탭 중에서 자전거 화면
 public class MainFragment32 extends Fragment {
@@ -141,6 +147,7 @@ public class MainFragment32 extends Fragment {
 
 					alertDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
+							updateEvent("BEACON_ENROLL");
 							BeaconEnroll beaconEnroll = new BeaconEnroll();
 							if(name == null){
 								beaconEnroll.execute("http://125.131.73.198:3000/beaconEnroll", useremail, addr, "temp");
@@ -159,6 +166,67 @@ public class MainFragment32 extends Fragment {
 				}
 			});
 		}
+	}
+
+	private void updateEvent(String event) {
+		RequestEpcisCapture erc = new RequestEpcisCapture();
+
+		String eventDate = new SimpleDateFormat("yyyy-MM-dd").format((System.currentTimeMillis()));
+		String eventTime = new SimpleDateFormat("HH:mm:ss").format((System.currentTimeMillis()));
+
+		Location location = null;
+
+		try {
+			if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+				location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+			if(location == null && mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+				location = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}catch (SecurityException ex)
+		{
+			Log.i("Timer:", ex.getMessage());
+		}
+
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+				"<!DOCTYPE project>\n" +
+				"<epcis:EPCISDocument xmlns:epcis=\"urn:epcglobal:epcis:xsd:1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+				"                     creationDate=\"2015-01-03T11:30:47.0Z\" schemaVersion=\"1.1\" xmlns:car=\"BiPortalGs1.xsd\">\n" +
+				"  <EPCISBody>\n" +
+				"    <EventList>\n" +
+				"      <ObjectEvent>\n" +
+				"        <!-- When -->\n" +
+				"        <eventTime>" + eventDate + "T" + eventTime + ".116-10:00</eventTime>\n" +
+				"        <eventTimeZoneOffset>-10:00</eventTimeZoneOffset>\n" +
+				"        <!-- When! -->\n" +
+				"\n" +
+				"        <!--  What -->\n" +
+				"        <epcList>\n" +
+				"          <epc>urn:epc:id:sgtin:1234567.123456.01</epc>\n" +
+				"        </epcList>\n" +
+				"        <!-- What!-->\n" +
+				"\n" +
+				"        <!-- Add, Observe, Delete -->\n" +
+				"        <action>ADD</action>\n" +
+				"\n" +
+				"        <!-- Why -->\n" +
+				"        <bizStep>urn:epcglobal:cbv:bizstep:"+ event +"</bizStep>\n" +
+				"        <disposition>urn:epcglobal:cbv:disp:user_accessible</disposition>\n" +
+				"        <!-- Why! -->\n" +
+				"\n" +
+				"        <!-- Where -->\n" +
+				"        <bizLocation>\n" +
+				"          <id>urn:epc:id:sgln:7654321.54321.1234</id>\n" +
+				"          <extension>\n" +
+				"            <geo>" + location.getLatitude() + "," + location.getLongitude() + "</geo>\n" +
+				"          </extension>\n" +
+				"        </bizLocation>\n" +
+				"        <!-- Where! -->\n" +
+				"      </ObjectEvent>\n" +
+				"    </EventList>\n" +
+				"  </EPCISBody>\n" +
+				"</epcis:EPCISDocument>";
+
+		erc.execute(xml);
 	}
 
 	private class BeaconEnroll extends AsyncTask<String, Void, String> {
